@@ -1,0 +1,1 @@
+export {default as UpdateWorkslotsPerWeek} from './update-workslots-per-week.component.js';
