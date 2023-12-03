@@ -1,1 +1,0 @@
-export {default as Toastify} from './toastify.component';
