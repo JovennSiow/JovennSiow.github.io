@@ -1,0 +1,1 @@
+export { default as ViewUsers } from "./view-users.component"

@@ -1,0 +1,1 @@
+export {default as ViewWorkslot} from "./view-workslot.component"
