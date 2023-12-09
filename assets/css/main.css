@@ -2271,3 +2271,18 @@ button,
     border-top: 0;
     margin-top: 0;
     padding-top: 0; }
+
+    .center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 80%;
+    }
+
+    .center2 {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 500px;
+      min-height: 330px;
+    }
