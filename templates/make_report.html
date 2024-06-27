@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Report</title>
+    
+     <!-- Bootstrap Icons CSS -->
+      <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        color: red;
+        margin-top: 20px;
+      }
+      
+        
+
+      form {
+        width: 50%;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+  .container {
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        align-items: center;
+        align-text: center;
+        justify-content: center;
+      }
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      select,
+      textarea,
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h4 >
+      {% if session['role'] == 'Driver' %}
+        <a href="{{ url_for('driver_dashboard') }}" style="
+        color: #007bff;
+        text-decoration: none; float: left
+        
+      ">          <i class="bi bi-chevron-left"></i></a>
+        {% elif session['role'] == 'Rider' %}
+        <a href="{{ url_for('rider_dashboard') }}" style="
+       color: #007bff ; 
+        text-decoration: none; float: left
+        
+
+      ">      <i class="bi bi-chevron-left"></i></a>      
+        {% endif %} 
+      </h4>
+    <h1>Make Report</h1>
+    <form action="/make_report" method="POST">
+      <!-- Add hidden input fields to capture usernames of involved parties -->
+      <input
+        type="hidden"
+        name="reporting_user_username"
+        value="{{ session.username }}"
+      />
+      <label for="rated_user_username">Select User to Report:</label>
+      <select name="reported_user_username" id="rated_user_username">
+        {% for user in users %}
+        <option value="{{ user.username }}">{{ user.username }}</option>
+        {% endfor %}
+      </select>
+      <br /><br />
+      <label for="report_details">Report Details:</label><br />
+      <textarea
+        name="report_details"
+        id="report_details"
+        rows="4"
+        cols="50"
+      ></textarea>
+      <br /><br />
+      <label for="date">Date:</label>
+      <input
+        type="text"
+        name="date"
+        id="date"
+        value="{{ now.strftime('%d/%m/%Y') }}"
+        readonly
+      />
+      <br /><br />
+      <input type="submit" value="Submit Report" />
+    </form>
+    {% if session['role'] == 'Driver' %}
+    <a href="{{ url_for('driver_dashboard') }}">Go Back to Dashboard</a>
+    {% elif session['role'] == 'Rider' %}
+    <a href="{{ url_for('rider_dashboard') }}">Go Back to Dashboard</a>
+    {% endif %}
+    </div>
+  </body>
+</html>

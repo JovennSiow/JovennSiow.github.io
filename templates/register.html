@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Register</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      input[type="password"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="date"],
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+      }
+
+      input[type="radio"] {
+        margin-right: 5px;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      .alert {
+        background-color: #f44336;
+        color: white;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div class="alert">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <h4 class="text-primary"><a href="{{ url_for('index') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      
+    <h1>Register</h1>
+    <form action="{{ url_for('register') }}" method="post">
+      <label for="username">Username:</label><br />
+      <input
+        type="text"
+        id="username"
+        name="username"
+        value="{{ form_data.username }}"
+        required
+      /><br /><br />
+
+      <label for="password">Password:</label><br />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        value="{{ form_data.password }}"
+        required
+      /><br /><br />
+
+      <label for="confirm_password">Confirm Password:</label><br />
+      <input
+        type="password"
+        id="confirm_password"
+        name="confirm_password"
+        value="{{ form_data.confirm_password }}"
+        required
+      /><br /><br />
+
+      <label for="address">Address:</label><br />
+      <input
+        type="text"
+        id="address"
+        name="address"
+        value="{{ form_data.address }}"
+        required
+      /><br /><br />
+
+      <label for="email">Email:</label><br />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="{{ form_data.email }}"
+        required
+      /><br /><br />
+
+      <label for="age">Age:</label><br />
+      <input
+        type="number"
+        id="age"
+        name="age"
+        min="18"
+        value="{{ form_data.age }}"
+      /><br /><br />
+
+      <label for="birthday">Birthday:</label><br />
+      <input
+        type="date"
+        id="birthday"
+        name="birthday"
+        value="{{ form_data.birthday }}"
+      /><br /><br />
+
+      <label for="gender">Gender:</label><br />
+      <input type="radio" id="gender" name="gender" value="male" {% if
+      form_data.gender == 'male' %} checked {% endif %} required> Male <input
+      type="radio" id="gender" name="gender" value="female" {% if
+      form_data.gender == 'female' %} checked {% endif %} required> Female<br /><br />
+
+      <label for="phone">Mobile Number:</label><br />
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        value="{{ form_data.phone }}"
+        pattern="\+65-?\d{8}"
+        placeholder="+65xxxxxxxx"
+        title="Please enter a valid Singapore phone number in the format: +65XXXXXXXX"
+        required
+      /><br /><br />
+
+      <label for="emergency_phone">Emergency Contact Number</label><br />
+      <input
+        type="tel"
+        id="emergency_phone"
+        name="emergency_phone"
+        value="{{ form_data.emergency_phone }}"
+        pattern="\+65-?\d{8}"
+        placeholder="+65xxxxxxxx"
+        title="Please enter a valid Singapore phone number in the format: +65XXXXXXXX"
+        required
+      /><br /><br />
+
+      <label for="emrgency_email">Emergency Email:</label><br />
+      <input
+        type="email"
+        id="emergency_email"
+        name="emergency_email"
+        value="{{ form_data.emergency_email }}"
+        required
+      /><br /><br />
+
+      <input type="submit" value="Register" />
+    </form>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Emergency Contact</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar {
+        background-color: #6495ed;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        text-align: center;
+      }
+
+      .navbar-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+        text-align: center;
+      }
+      .container {
+        margin-top: 60px; /* Adjust margin to accommodate navbar */
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="tel"],
+      input[type="email"] {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button[type="submit"] {
+        background-color: #337ab7;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #23527c;
+      }
+
+      button[type="button"] {
+        background-color: #d9534f;
+        color: #fff;
+      }
+
+      button[type="button"]:hover {
+        background-color: #c9302c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar text-center">
+      <h3 class="navbar-title text-center" style="text-align: center">
+        <a
+          href="{{ url_for('emergency_contact') }}"
+          style="
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+            float: left;
+          "
+        >
+          <i class="bi bi-chevron-left"></i>
+        </a>
+        Edit Emergency Contact Information
+      </h3>
+    </div>
+    <div class="container bg-light">
+      <form method="POST">
+        <label for="name">Name:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value="{{ contact.name }}"
+          required
+        /><br />
+        <label for="phone">Mobile Number:</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          value="{{ contact.phone }}"
+          pattern="\+65-?\d{8}"
+          placeholder="+65xxxxxxxx"
+          title="Please enter a valid Singapore phone number in the format: +65XXXXXXXX"
+          required
+        /><br />
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value="{{ contact.email }}"
+          required
+        /><br /><br />
+        <button type="submit">Update Contact</button>
+      </form>
+      <form
+        method="POST"
+        action="{{ url_for('delete_emergency_contact', contact_id=contact.id) }}"
+      >
+        <button class="btn btn-danger">Remove</button>
+    
+      </form>
+    </br>
+    </div>
+  </body>
+</html>

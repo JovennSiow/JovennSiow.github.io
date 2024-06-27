@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Scheduled Rides</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #007bff;      
+      }
+
+      form {
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      input[type="time"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath fill='%23333' d='M6 6L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position-x: calc(100% - 12px);
+        background-position-y: center;
+        padding-right: 30px;
+      }
+
+      #specific_days {
+        display: none;
+      }
+
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+        <a
+          href="{{ url_for('rider_dashboard') }}"
+          style="text-decoration: none; margin-right: 25px"
+        >
+          <i class="bi bi-chevron-left"></i> Back
+        </a>
+      </p>
+    <h1>Request Scheduled Ride</h1>
+    <form action="/request_scheduled_ride" method="POST">
+      <label for="origin">Origin:</label>
+      <input type="text" id="origin" name="origin" required />
+
+      <label for="destination">Destination:</label>
+      <input type="text" id="destination" name="destination" required />
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required />
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time" required />
+
+      <label for="num_of_pax">Number of Passengers:</label>
+      <input type="number" id="num_of_pax" name="num_of_pax" required />
+
+      <label for="recurrence_pattern">Recurrence Pattern:</label>
+      <select
+        id="recurrence_pattern"
+        name="recurrence_pattern"
+        onchange="toggleSpecificDays()"
+      >
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="specific_days">Specific Days</option>
+      </select>
+
+      <div id="specific_days">
+        <label>Choose Specific Days:</label><br />
+        <input type="checkbox" name="days[]" value="Monday" /> Monday
+        <input type="checkbox" name="days[]" value="Tuesday" /> Tuesday
+        <input type="checkbox" name="days[]" value="Wednesday" /> Wednesday
+        <input type="checkbox" name="days[]" value="Thursday" /> Thursday
+        <input type="checkbox" name="days[]" value="Friday" /> Friday
+        <input type="checkbox" name="days[]" value="Saturday" /> Saturday
+        <input type="checkbox" name="days[]" value="Sunday" /> Sunday
+      </div>
+
+      <button type="submit">Request Ride</button>
+    </form>
+
+    <script>
+      function toggleSpecificDays() {
+        var specificDaysDiv = document.getElementById("specific_days");
+        var recurrencePattern =
+          document.getElementById("recurrence_pattern").value;
+        if (recurrencePattern === "specific_days") {
+          specificDaysDiv.style.display = "block";
+        } else {
+          specificDaysDiv.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>

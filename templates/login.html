@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+     <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" >
+    
+  <style>
+    body {
+        padding: 60px 20px 45px 20px ;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        /* min-height: 120vh; */
+        background-size: contain;
+        background-repeat: no-repeat;
+
+      }
+      *{margin:0;
+       padding:0;
+       box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+     }
+
+    .wrapper {
+     padding : 20px 40px;
+     /* background: linear-gradient(
+      rgba(150, 100, 150, 0.8),
+      rgba(130, 130, 230, 0.8)  */
+    );    
+      border-radius: 10px;
+      border:  2px solid ;
+      backdrop-filter: blur(20px); 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: auto;
+      justify-content: center;
+
+    } 
+
+   .wrapper h2{
+    font-size: 36px;
+    text-align: center;
+     }  
+
+   .wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 30px 0;
+    
+   }
+   .wrapper .remember-forgot {
+    display: flex;
+    font-size: 14.5px;
+    margin : -15px 0 15px;
+   }
+   .remember-forgot label input {
+    accent-color: #fff;
+    margin-right: 3px;
+
+   }
+    
+   .input-box input{
+    width: 100%;
+    height: 100%;
+    /*border: none;*/
+    outline: none;
+    border : 1px solid rgba (255,255,255, .2);
+    border-radius: 40px;
+    padding: 8px 15px 8px 15px;
+    font-size: 16px;
+   }
+   .input-box i {
+    position: absolute;
+    left: -30px;
+    font-size: 25px;
+    transform: translateY(40%) ;
+   }
+   .footer {
+    color: #fff;
+    background-color: #001641;
+    padding: 20px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div> <img src="../static/img/login-background.webp" style="width: 100%" alt="a car"> 
+    </div>
+     
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 id="login">Login</h2>
+    <form action="{{ url_for('login') }}" method="post">
+      
+    <div class= "input-box" >   
+    <!-- <label for="username">Username:</label> -->
+    <i class="bx bxs-user"></i> 
+    <input type="text" id="username" placeholder="Username" name="username" required>
+    </div>
+
+<div class= "input-box" >       
+  <!-- <label for="password">Password:</label> -->
+  <i class="bx bxs-lock-alt"></i> 
+
+  <input type="password" id="password" placeholder="Password" name="password"required>
+</div>
+
+<div class= "remember-forgot" >    
+  <label> <input type = "checkbox"> Remember me </label>
+</div>
+
+    <button type="submit" class="btn btn-primary rounded-pill" style="width: 150px; font-size: 16px"> Login </button>
+    
+    </form><br>
+    
+    <!-- Link for Forgot Password -->
+    <a href="{{ url_for('register') }}">Create Account</a></p>
+    <!-- Link for Forgot Password -->
+    <p>Forgot your password? <a href="{{ url_for('forgot_password') }}">Reset it here</a>.</p>
+    <p> <a href="{{ url_for('index') }}" id="dashboardLink"><i class="bi bi-chevron-double-left"></i>Go Back</a></p>
+
+  </div>
+  
+  
+  <!-- <footer class="text-center">
+    &copy; SIMRIDE @2024 
+    <p> 123 Clementi Road, Singapore (S 987654) </p>
+  </footer> -->
+
+      <!-- Bootstrap JS and jQuery -->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      
+      <script src="../static/js/translation.js"></script>
+  
+</body>
+</html>

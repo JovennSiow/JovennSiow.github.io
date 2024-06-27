@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="rate_and_review">Rate and Review</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- RateYo CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- RateYo JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+    <script>
+      function showThankYou() {
+        var thankYouMessage = document.getElementById("thank-you-message");
+        thankYouMessage.style.display = "block";
+      }
+      $(function () {
+        $("#rating").rateYo({
+          starWidth: "30px",
+          spacing: "5px",
+        });
+      });
+    </script>
+    <style>
+      #thank-you-message {
+        display: none;
+        color: green;
+        font-weight: bold;
+      }
+      .form-group {
+        width: 70%;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 id="rate_and_review1">Rate and Review</h1>
+
+      <form method="POST" onsubmit="showThankYou()">
+        <div class="form-group">
+          <label for="ride_id" id="select_ride"> Select Ride: </label>
+          <select class="form-control" name="ride_id" id="ride_id">
+            {% for ride in rides %}
+            <option value="{{ ride.id }}">
+              {{ ride.destination }} - {{ ride.date }} {{ ride.time }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rated_user_id" id="select_user_to_rate/review">
+            Select User to Rate/Review:
+          </label>
+          <select class="form-control" name="rated_user_id" id="rated_user_id">
+            {% for user in users %}
+            <option value="{{ user }}">{{ user }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rating" id="ratingTranslation"> Rating: </label>
+          <div id="rating"></div>
+          <input type="hidden" name="rating" id="rating_input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="review" id="reviewTranslation">Review: </label>
+          <textarea
+            class="form-control"
+            name="review"
+            id="review"
+            rows="4"
+          ></textarea>
+        </div>
+        <div class="form-group text-center mt-5">
+          <button type="submit" id="submit" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <!-- Thank You message -->
+      <div id="thank-you-message" class="mt-3 alert alert-success">
+        <span id="ThanksForRating">
+          Thank you for your rating and review!
+        </span>
+      </div>
+    </div>
+
+    <script>
+      function loadTranslations(language) {
+        console.log("Loading translations for language:", language);
+        fetch("../static/json/" + language + ".json")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Translations data:", data);
+            // Apply translations to elements
+            Object.keys(data).forEach((key) => {
+              const element = document.getElementById(key);
+              if (element) {
+                element.textContent = data[key];
+                console.log("Element updated for key:", key);
+              } else {
+                console.log("Element not found for key:", key);
+              }
+            });
+          })
+          .catch((error) =>
+            console.error("Error loading translations:", error)
+          );
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        const selectedLanguage = sessionStorage.getItem("selectedLanguage");
+        if (selectedLanguage) {
+          loadTranslations(selectedLanguage);
+          document.getElementById("language").value = selectedLanguage;
+        }
+      });
+    </script>
+  </body>
+</html>

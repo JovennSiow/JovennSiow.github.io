@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+	 <!-- Bootstrap Icons CSS -->
+	 <link
+	 href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+	 rel="stylesheet"
+   />
+	    <style>
+	        .card:hover img {
+	          transform: scale(1.1); /* Adjust the scale factor as needed */
+	          transition: transform 0.3s ease; /* Add smooth transition for the effect */
+	        }
+	        a:hover {
+	          text-decoration: none; /* Remove underline effect on hover */
+
+	        }
+	        .card:hover {
+
+	        }
+	        .navbar{
+	          /* background: #6A5ACD; slate blue */
+	           background: #6495ED; cornflowerblue 
+	          /* background: #4682B4;  steel blue */
+	          z-index: 100;
+	        }
+            
+			
+	     
+
+	      body {
+	        padding: 60px 20px 45px 20px ;
+	        margin: auto;
+	      }
+      
+	    </style>
+	  
+	  
+	
+</head>
+<body>   
+	 {% if error_message %}
+	    <h2>Error: {{ error_message }}</h2>
+	    {% else %}
+    
+	    <nav class="navbar navbar-expand-lg navbar-dark text-white fixed-top self-align-center">
+		<a href="{{ url_for('driver_or_rider') }}" style="color: white; text-decoration: none; margin-right: 10px" >  <i class="bi bi-chevron-left"></i> </a>
+
+	      <a class="navbar-brand text-white" href="#" id="rider_dashboard1">Rider Dashboard</a>
+	      <button
+	        class="navbar-toggler"
+	        type="button"
+	        data-toggle="collapse"
+	        data-target="#navbarNav"
+	        aria-controls="navbarNav"
+	        aria-expanded="false"
+	        aria-label="Toggle navigation"
+	      >
+	        <span class="navbar-toggler-icon"></span>
+	      </button>
+     
+      
+	      <div class="collapse navbar-collapse float-right" id="navbarNav" >
+	        <ul class="navbar-nav ml-auto">
+	          <!-- Align menu to the right -->
+	          <li class="nav-item">
+	          <label for="language" id="language_label" style="padding-top: 9px">Change Language: </label>
+	          <select id="language" class="form-select form-select-sm" >
+	            <option value="en">English</option>
+	            <option value="ms">Malay</option>
+	            <option value="zh">Chinese</option>
+	            <option value="fr">French</option>
+	          </select>
+	        </li>
+	        
+	        </ul> 
+	      </div>
+	    </nav>
+	
+ <p>
+    <!-- <h3>Booked Rides:</h3>
+    <ul>
+        {% for ride in rides %}
+            <li>{{ ride.origin }} to {{ ride.destination }} on {{ ride.date }} at {{ ride.time }} - Seats available: {{ ride.seats_available }}
+                <a href="{{ url_for('view_route', id=ride.id) }}">View Route</a>
+            </li>
+        {% endfor %} 
+    </ul> -->
+		  </br>
+		    <div class="container-lg  text-center self-align-center bg-light"  >
+
+		      <div class="card mb-5" id="home">
+		        <div class="card-body  rounded-top self-align-center w-100 text-white" style="background-color: #318CE7" >
+		          <h2 class="card-title"><span id="welcome"> Welcome, </span> {{ username }} </h2>
+		               <p class="card-text" id="welcome_message"> Save the Environment and Contribute to Society with SIM Ride!</p>
+		        </div>
+		      </div>
+   
+				<div class = "row">
+
+		        <div class="col-md-6 mb-3">
+				<div class="row-sm mb-3">
+		          <div class="card h-100 d-flex">
+		            <div class="card-body rounded-bottom text-center align-self-center" >
+		              <h4 class="card-title" id="offer_ride" >Create a Carpool Request</h4>
+		              <p class="card-text" id="offer_ride_content">Join a ride with others.</p>
+		                <div>
+		                <img src="../static/img/carpool-thumbnail.jpg.webp" alt="car sharing" style="position:center; width: 50%; margin-bottom: 50px; margin-top: 30px">
+		               </div>
+		            <button type="button" id="book_ride_btn" class="btn btn-primary btn-lg stretched-link" style="width:130px" onclick="window.location.href = '/book_ride';">Go</button>
+
+		            </div>
+		          </div>
+		        </div>
+
+				<div class="row-sm mb-3">
+					<div class="card h-100 d-flex">
+					  <div class="card-body rounded-bottom text-center align-self-center" >
+						<h4 class="card-title" id="view_offered_scheduled_rides" > View Scheduled Rides Available</h4>
+						<p class="card-text" id="view_offered_scheduled_rides_content">Book scheduled rides offered! </p>
+					  <button type="button" id="view_offered_scheduled_rides_btn" class="btn btn-primary btn-lg stretched-link" style="width:130px" onclick="window.location.href = '/view_offered_scheduled_rides';">View</button>
+  
+					  </div>
+					</div>
+				  </div>
+				  
+				</div>
+		        <!-- Right column with "Ride Requests" and "Rate and Review" cards -->
+		        <div class="col-md-6 mb-3">
+		          <!-- First row for "Ride Requests" card -->
+		          <div class="row-sm mb-3">
+		            <div class="card h-100 d-flex w-100">
+		              <div class="card-body rounded-bottom text-center">
+		                <h5 class="card-title" id="ride_offers">Ride Offers</h5>
+		                <p class="card-text" id="ride_offers_content">See Carpool Offers.</p>
+		                <a href="{{ url_for('passenger', username=username, gender=gender) }}" class="btn btn-md btn-info stretched-link style=" id="ride_offers_btn" > View Offers </a>
+		              </div>
+		            </div>
+		          </div>
+		          <!-- Second row for "Chat Room" card -->
+		          <div class="row-sm mb-3">
+		            <div class="card h-100 d-flex w-100">
+		              <div class="card-body text-center">
+		                <h4 class="card-title"><a href="{{ url_for('requests_or_offers', username=username) }}" id="my_scheduled_rides" class="stretched-link">My Scheduled Rides</a></h4>
+		                <p class="card-text" id="my_scheduled_rides_content">View your scheduled rides.</p>
+		              </div>
+		            </div>
+		          </div>
+        
+		          <div class="row-sm mb-3">
+		            <div class="card h-100 d-flex w-100">
+		              <div class="card-body text-center">
+		                <h4 class="card-title" id="request_scheduled_rides">Request Scheduled Rides</h4>
+		                <p class="card-text" id="request_scheduled_rides_content">Create scheduled carpool requests</p>
+		                <button type="button" id="request_scheduled_rides_btn" class="btn btn-outline-warning btn-md stretched-link" style="width:125px" onclick="window.location.href = '/request_scheduled_ride';">Schedule</button>
+		              </div>
+		            </div>
+		          </div>
+
+		        </div>
+		      </div>
+  
+    
+		<div class="row">
+
+		  <div class="col-md-6 mb-3">
+		    <div class="card d-flex h-100">
+		      <div class="card-body rounded text-center" >
+		       <h4 class="card-title" id="settings"> Settings </h4> 
+		       <!-- <button type="button" id="settings_btn" class="btn btn-outline-secondary btn-md stretched-link" style="width:125px" onclick="window.location.href = '/settings';">Settings</button> -->
+		        <p class="card-text" id="settings_content" >Adjust your account settings.</p>
+		        <a href="{{ url_for('settings') }}" class=" btn btn-md btn-dark stretched-link" id="settings_btn"> Go to Settings </a> 
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="col-md-6 mb-3">
+		    <div class="card">
+		      <div class="card-body text-center h-100">
+		        <h4 class="card-title" id="make_report">Make a report</h4> 
+		        <p class="card-text" id="make_report_content">Report an issue or incident.</p>
+		         <a href="{{ url_for('make_report') }}" class=" btn btn-md btn-outline-danger stretched-link" id="make_report_btn"> Report </a> 
+		      </div>
+		    </div>
+		  </div>
+ 
+		</div>
+
+		<div class="row">
+  
+        
+		  <div class="col-md-6 mb-3">
+		    <div class="card">
+		      <div class="card-body text-center">
+		        <h5 class="card-title" id="general_enquiry"> General Enquiry </h5> 
+		        <p class="card-text" id="general_enquiry_content">If you have any questions, feel free to ask!</p>
+
+		        <a href="{{ url_for('ask_question') }}" class="btn btn-outline-primary stretched-link">Ask a Question</a>
+		      </div>
+		    </div>
+		  </div>
+
+
+		        <div class="col-md-3 mb-3">
+		          <div class="card h-100 rounded-left">
+		            <div class="card-body text-center" > 
+		              <h5 class="card-title"><a href="{{ url_for('view_faq') }}" class="stretched-link text-info mb-2"> FAQs </a></h5>
+		              <p class="card-text" id="FAQ_content">View frequently asked questions.</p>
+		            </div>
+		          </div>
+		        </div>
+          
+		        <div class="col-md-3 mb-3">
+		          <div class="card h-100 rounded-right">
+		            <div class="card-body text-center">
+		              <h5 class="card-title"> <a href="{{ url_for('view_questions') }}" class="stretched-link mb-2" id="view_questions">View Questions</a></h5>
+		              <p class="card-text" id="view_questions_content">View previously asked questions.</p>
+		            </div>
+		          </div>
+		        </div>
+
+		   </div>
+
+		          <div class="card">
+		            <div class="card-body bg-dark text-center text-white self-align-center w-80" >
+		              <h5 class="card-title"><a href="{{ url_for('logout') }}" class="btn btn-danger stretched-link" style="width: 125px" id="logout"> Logout </a></h5>
+		              <!-- <h4 class="card-title" id="logout">Logout</h4>  -->
+		              <!-- <button type="button" id="logout_btn" class="btn btn-danger btn-md  " style="width:125px" onclick="window.location.href = '/logout';">Logout</button>
+		            </br> -->
+		            <p class="card-text" id="logout_content"> Sign out from your account.</p>
+
+		            </div>
+		          </div>
+       
+                  <p class="text-left mt-5"><a href="{{ url_for('driver_or_rider') }}"><i class="bi bi-chevron-double-left"></i>Go Back</a></p>
+				</br>
+
+		    </div>
+			
+		    {% endif %}
+		  
+
+		  </br> </br>
+
+		  <footer class="text-center">
+		    &copy; SIM RIDE @2024 
+		    <p> 123 Clementi Road, Singapore (S 987654) </p>
+		  </footer>
+		  
+  
+   
+    <script>
+        
+        // Function to display notifications
+        function displayNotification(message) {
+            var notificationsDiv = document.getElementById('notifications');
+            var notificationElement = document.createElement('div');
+            notificationElement.textContent = message;
+            notificationsDiv.appendChild(notificationElement);
+        }
+
+        // Function to periodically check for new ride requests
+        function checkForRideRequests() {
+            // Make a request to the server to check for new ride requests
+            fetch('/check_for_ride_requests')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data (list of ride requests) received from the server
+                data.forEach(request => {
+                    // Display a notification for each ride request
+                    displayNotification(`New ride request: ${request.origin} to ${request.destination}`);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        // Periodically check for new ride requests (every 30 seconds)
+        setInterval(checkForRideRequests, 10000);
+        
+    </script>
+		
+  
+	    <!-- Bootstrap JS and jQuery -->
+	    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+	    <script src="../static/js/translation.js"></script>
+</body>
+
+</html>

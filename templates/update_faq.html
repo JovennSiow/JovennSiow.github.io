@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update FAQ</title><link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa; /* Light gray background */
+        color: #343a40; /* Dark gray text color */
+        padding-top: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: #007bff; /* Primary blue heading color */
+        text-align: center;
+        margin-bottom: 10px;
+        margin-bottom: 10px;
+      }
+
+      form {
+        background-color: #ffffff; /* White form background */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+        padding: 30px;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        max-width: 400px; /* Limiting max width */
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ced4da; /* Gray border */
+        border-radius: 5px;
+        resize: vertical;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff; /* Primary blue button color */
+        color: #ffffff; /* White text color */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+      }
+
+      a {
+        color: #007bff; /* Primary blue link color */
+        text-decoration: none;
+        margin-top: 10px;
+        display: inline-block;
+        transition: color 0.3s;
+      }
+
+      a:hover {
+        color: #0056b3; /* Darker blue on hover */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h4 class="text-primary"><a href="{{ url_for('admin_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      
+      <h1>Update FAQ</h1>
+      <form method="post" action="{{ url_for('update_faq', faq_id=faq.id) }}">
+        <div class="form-group">
+          <label for="question">Question:</label>
+          <input
+            type="text"
+            id="question"
+            name="question"
+            value="{{ faq.question }}"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="answer">Answer:</label>
+          <textarea
+            id="answer"
+            name="answer"
+            rows="4"
+            class="form-control"
+            required
+          >
+{{ faq.answer }}</textarea
+          >
+        </div>
+
+        <input type="submit" value="Update" class="btn btn-primary" />
+      </form>
+      <br />
+      <a href="{{ url_for('faqs_page') }}" class="btn btn-secondary"
+        >Back to FAQs</a
+      >
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"
+        >Back to Home</a
+      >
+    </div>
+  </body>
+</html>

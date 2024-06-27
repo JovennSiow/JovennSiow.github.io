@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Offered Scheduled Rides</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <script src="../static/js/filter.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .ride-card {
+        margin-bottom: 20px;
+      }
+
+      .btn-book {
+        margin-top: 10px;
+      }
+
+      label {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body id="view-ride-offers">
+    <div class="container"> 
+     <h4> <a
+        href="{{ url_for('rider_dashboard') }}"
+        style="
+          text-decoration: none;
+            margin-top: 10px;
+          float: left;
+        "
+      >
+        <i class="bi bi-chevron-left"></i>
+      </a></h4> 
+
+      <h1 class="text-center ml-3 mr-3 text-primary">
+        View Scheduled Rides Offered by the Drivers
+      </h1>
+      <div class="text-center mb-4">
+        <label for="date-picker">Select a date:</label>
+        <input
+          type="date"
+          id="date-picker"
+          name="date-picker"
+          
+        />
+      </div>
+      <div id="rides-container-offers">
+        {% for ride in scheduled_rides %}
+        <div class="justify-content-center">
+          <div class="card ride-card ml-3 mr-3">
+            <div class="card-body">
+              <h5 class="card-title">Driver: {{ ride.driver }}</h5>
+              <p class="card-text">
+                <strong>Origin:</strong> {{ ride.origin }}
+              </p>
+              <p class="card-text">
+                <strong>Destination:</strong> {{ ride.destination }}
+              </p>
+              <p class="card-text"><strong>Date:</strong> {{ ride.date }}</p>
+              <p class="card-text"><strong>Time:</strong> {{ ride.time }}</p>
+              <p class="card-text">
+                <strong>Seats Available:</strong> {{ ride.seats_available }}
+              </p>
+              <form
+                action="{{ url_for('book_offered_scheduled_rides', ride_id=ride.id) }}"
+                method="POST"
+              >
+                <div class="form-group">
+                  <label for="pickup_point">Your Origin (Pick-up Point):</label>
+                  <input
+                    type="text"
+                    id="pickup_point"
+                    name="pickup_point"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary btn-book">
+                  Book Ride
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

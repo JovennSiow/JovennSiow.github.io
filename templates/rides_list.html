@@ -1,0 +1,36 @@
+{% for ride in scheduled_rides %}
+<div class="col-6">
+  <div class="card ride-card">
+    <div class="card-body">
+      <h5 class="card-title">Driver: {{ ride.driver }}</h5>
+      <p class="card-text"><strong>Origin:</strong> {{ ride.origin }}</p>
+      <p class="card-text">
+        <strong>Destination:</strong> {{ ride.destination }}
+      </p>
+      <p class="card-text"><strong>Date:</strong> {{ ride.date }}</p>
+      <p class="card-text"><strong>Time:</strong> {{ ride.time }}</p>
+      <p class="card-text">
+        <strong>Seats Available:</strong> {{ ride.seats_available }}
+      </p>
+      <form
+        action="{{ url_for('book_offered_scheduled_rides', ride_id=ride.id) }}"
+        method="POST"
+      >
+        <div class="form-group">
+          <label for="pickup_point">Your Origin (Pick-up Point):</label>
+          <input
+            type="text"
+            id="pickup_point"
+            name="pickup_point"
+            class="form-control"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary btn-book">
+          Book Ride
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}

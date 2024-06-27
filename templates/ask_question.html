@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ask Question</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+      }
+     .container {
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        align-items: center;
+        align-text: center;
+        justify-content: center;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #007bff;
+      }
+
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class= "container">
+        {% if session['role'] == 'Rider' %}
+    <h4 class="text-primary"><a href="{{ url_for('rider_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      {%elif session['role'] == 'Driver' %}
+        <h4 class="text-primary"><a href="{{ url_for('driver_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+    {%endif%}
+
+    
+    <h1>Ask Question</h1>
+    <form method="post" onsubmit="return validateForm()">
+      <input
+        type="hidden"
+        name="user_username"
+        value="{{ session.username }}"
+      />
+      <label for="user_type">Question Category:</label><br />
+      <select id="user_type" name="user_type" required>
+        <option value="Rider">Rider</option>
+        <option value="Driver">Driver</option>
+        <option value="General">General</option></select
+      ><br />
+
+      <label for="question_text">Question:</label><br />
+      <textarea
+        id="question_text"
+        name="question_text"
+        rows="4"
+        cols="50"
+      ></textarea
+      ><br />
+
+      <input type="submit" value="Submit" />
+    </form>
+      <br >
+   {% if session['role'] == 'Driver' %}
+    <a href="{{ url_for('driver_dashboard') }}">Go Back to Dashboard</a>
+    {% elif session['role'] == 'Rider' %}
+    <a href="{{ url_for('rider_dashboard') }}">Go Back to Dashboard</a>
+    {% endif %}
+    </div>
+   
+    <script>
+      function validateForm() {
+        var questionText = document
+          .getElementById("question_text")
+          .value.trim();
+        if (questionText === "") {
+          alert("Question cannot be empty.");
+          return false;
+        }
+        if (questionText.length > 500) {
+          alert(
+            "Question text is too long. Please limit it to 500 characters."
+          );
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </body>
+</html>

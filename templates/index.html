@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+	#thankYouMessage {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    #thankYouContent {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+      text-align: center;
+    }    
+      body {
+        padding-top: 60px;
+        /*background-image: url("../static/img/carpool-background.png");
+        background-size: 100% 300px;
+        background-repeat: no-repeat;
+        background-attachment: fixed; */
+      }
+      .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 50vh;
+        background: #001641;
+    }
+      .navbar {
+        background: #3944BC; 
+        z-index: 100;
+
+        /*background: rgba(0, 0, 0, 0.6); /* Using RGBA with transparency */
+
+        /* background: linear-gradient(
+          rgba(200, 200, 200, 0.8),
+          rgba(230, 230, 230, 0.8) 
+        ); */
+      }
+      .navbar-brand {
+        color: #fff;
+        font-weight: bold;
+      }
+      .navbar-toggler {
+        border-color: #fff;
+      }
+      .nav-link {
+        color: #fff !important;
+      }
+      .nav-link:hover {
+        color: #ffc107 !important;
+      }
+      .btn-login {
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+      .btn-login:hover {
+        background-color: #ff8c00;
+      }
+      .section-title {
+        text-transform: uppercase;
+        font-weight: bold;
+        /* color: #fff; */
+      }
+      .section-content {
+        color: #fff;
+      }
+      .footer {
+        color: #fff;
+        background-color: #001641;
+        padding: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+        <div> <img src="../static/img/car1.webp" style="width: 100%" alt="a car"> 
+        </div>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style='border-bottom: solid rgba(0, 22, 65, 0.75); '>
+        <div class="container">
+          <button
+            class="navbar-toggler mr-2"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <a class="navbar-brand" href="#" >SIM Ride</a>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#home" id="home-nav"
+                      >Home</a
+                    >
+                  </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#about" id="about_us-nav"
+                  >About Us</a
+                >
+              </li>
+             <!--  <li class="nav-item">
+                <a class="nav-link" href="#donate" id="donate-nav">Donate</a>
+              </li> --> 
+              <li class="nav-item">
+                <a class="nav-link" href="#contact" id="contact_us-nav"
+                  >Contact Us</a
+                >
+              </li>
+              <li class="nav-item ">
+                <select id="language" class="form-select form-select-sm" style="margin-top: 9px; margin-left: 9px" >
+                  <option value="en">English</option>
+                  <option value="ms">Malay</option>
+                  <option value="zh">Chinese</option>
+                  <option value="fr">French</option>
+                </select>
+              </li>
+            </ul>
+          </div>
+          <div class="ml-auto">
+            <button class="btn btn-login bg-primary ml-3" onclick="window.location.href = '/login';" id="sign_in_btn">Sign In</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+	
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+	
+    <section id="home" class="text-center p-4">
+      <h1
+        class="section-title mb-4 mt-3 p-3"
+        id="welcome_index"
+    
+      >
+        Welcome to SIM Ride!
+      </h1>
+      <p id="intro">
+        Welcome to SIM Ride, a platform you can use to make a better change to
+        your society and the Earth. Come and join us in our journey to build a
+        sustainable future of Singapore and the world, while saving your
+        unncessary costs related to transport, vehicle maintenance, and parking.
+        Be the change!
+      </p> <br>
+      <p> 
+        <button type = "button" class = "btn btn-primary rounded-pill btn-lg" onclick="window.location.href = '/register'" id= "get_started_btn"> Get started </button>
+      </p>
+    </section>
+
+    <section id="about" class="py-5 text-center bg-light">
+      <div class="container">
+        <h2 class="section-title text-dark mb-4" id="about_us">About Us</h2>
+          
+            <div class="section-content bg-light text-dark p-4">
+              <h3 id="what_is_SIMRide">What is SIMRide?</h3>
+              <p id="SIMRide_content">
+                SIM RIDE is a web-based carpooling app exclusively for SIM
+                students and staff members. It is a non-profit online platform
+                for SIM students and staff members to be able to request a lift
+                (carpooling) to SIM campus and to receive requests to pick up
+                university students/staff. The goal of this platform is to
+                reduce greenhouse gas emissions, allow students and staff to
+                save money on petrol use, car maintenance, and car parking at
+                the university.
+              </p>
+            
+            </div>
+          
+            <div class="section-content bg-dark text-white p-4">
+              <h3 id="objective">Objective</h3>
+              <p id="objective_content">
+                We aim to develop a non-profit online platform with efficient
+                users’ data management functionalities and a user-friendly
+                interface. This platform will enable SIM students and staff to
+                practice the eco-friendly action of carpooling to reduce carbon
+                footprints, save petrol and hence save money, and prevent global
+                warming together.
+              </p>
+            
+             </div>
+
+        <div class="bg-light text-dark p-5 text-center">
+            <h2 id="vision"> Vision: </h2>
+            <p id="vision_content"> To build a sustainable future, starting from school of SIM to the whole of Singapore and to encourage behavioural change for sustainability!</p> 
+        </div>
+           
+            <div class="bg-dark text-white p-5 text-center w-100">
+              <h2 id="our_goals"> Our Goals: </h2>
+              <p> <ul class="list-unstyled text-left">
+              <li id="goal_1"> To help the SIM students and Staff to save their transport fees and time.</li>
+              <li id="goal_2"> To reach the goal of 1000 registered users in the first year of release.</li>
+              <li id="goal_3"> To encourage people to go green by utilizing SIM Ride.</li>
+              <li id="goal_4"> To help car owners save money on petrol and car maintenance by taking turns to carpool.</li>
+              </ul></p> 
+            </div>      
+        </div>
+    </section>
+<!-- 
+    <section id="donate" class="bg-light py-5 text-center">
+      <div class="container">
+        <h2 class="section-title mb-4 text-dark" id="donate">Donate</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <img
+              src="../static/img/Sustainability.png"
+              alt="Sustainability"
+              class="img-fluid mb-3"
+            />
+          </div>
+          <div class="col-md-6">
+            <img
+              src="../static/img/Carpooling.jpg"
+              alt="Carpooling"
+              class="img-fluid mb-3"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Paynow:</h5>
+            <p>98765123 (SIM Ride)</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Bank Transfer (DBS):</h5>
+            <p>123456789 (SIM Ride)</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Paypal:</h5>
+            <p>98765427 (SIM Ride)</p>
+          </div>
+        </div>
+      </div>
+    </section>    -->
+<!-- Contact Us Section -->
+<section id="contact" class="bg-light py-5">
+    <div class="container">
+      <h2 id="contact_us" class="text-center mb-4">Contact Us</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <h4 id="contact_information">Contact Information</h4>
+          <ul class="list-unstyled">
+            <li><strong> Email:</strong> SIMRide@gmail.com </span> </li>
+            <li><strong> Phone:</strong> +65-8564-7890 </li>
+            <li><strong> Address:</strong> 123 Clementi Road, Clementi, Singapore</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h4 id="contact_form">Contact Form</h4>
+  <form id="contactForm">
+    <div class="form-group">
+      <label for="name" id="name_label">Name</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label for="email" id="email_label">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter your email">
+    </div>
+    <div class="form-group">
+      <label for="message" id="message_label">Message</label>
+      <textarea class="form-control" id="message" rows="5" placeholder="Enter your message"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+  </form>
+
+  <!-- Thank you message container -->
+  <div id="thankYouMessage">
+    <div id="thankYouContent">
+      <span id="closeThankYou" style="cursor:pointer;">&times;</span>
+      <h2>Thank You!</h2>
+      <p>Thank you for your message! We will get back to you soon.</p>
+    </div>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+    <footer class="footer text-center">
+      &copy; SIMRIDE @2024
+      <p>123 Clementi Road, Singapore (S 987654)</p>
+    </footer>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../static/js/translation.js"></script>
+	  <script>
+    // JavaScript to handle form submission
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Display the thank you message
+      document.getElementById('thankYouMessage').style.display = 'block';
+    });
+
+    // JavaScript to close the thank you message
+    document.getElementById('closeThankYou').addEventListener('click', function() {
+      document.getElementById('thankYouMessage').style.display = 'none';
+    });
+
+    // Close the thank you message when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target == document.getElementById('thankYouMessage')) {
+        document.getElementById('thankYouMessage').style.display = 'none';
+      }
+    });
+  </script>
+
+
+
+  </body>
+</html>

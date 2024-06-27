@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+      }
+
+      form {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      input[type="text"] {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button[type="submit"] {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      table {
+        width: 80%;
+        margin: 0 auto;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      td a {
+        text-decoration: none;
+        color: #007bff;
+      }
+
+      td a:hover {
+        text-decoration: underline;
+      }
+
+      a.back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a.back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h4 class="text-primary"><a href="{{ url_for('admin_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      <h1>User Management</h1>
+
+    <form action="{{ url_for('user_management') }}" method="GET">
+      <label for="search">Search by Username:</label>
+      <input type="text" id="search" name="search" />
+      <button type="submit">Search</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if no_results %}
+        <tr>
+          <td colspan="5">
+            No search results for '{{ request.args.get('search') }}'
+          </td>
+        </tr>
+        {% else %} {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.status }}</td>
+          <td>
+            <a href="{{ url_for('activate_user', user_id=user.id) }}"
+              >Activate</a
+            >
+            |
+            <a href="{{ url_for('suspend_user', user_id=user.id) }}">Suspend</a>
+            |
+            <a href="{{ url_for('ban_user', user_id=user.id) }}">Ban</a>
+          </td>
+        </tr>
+        {% endfor %} {% endif %}
+      </tbody>
+    </table>
+
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link"
+      >Back to Home</a
+    >
+  </body>
+</html>

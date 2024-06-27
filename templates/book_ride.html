@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book a Ride</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h2 {
+        text-align: center;
+        margin-top: 20px;
+        
+      }
+
+      #map {
+        height: 400px;
+        width: 100%;
+        margin: 20px auto;
+      }
+
+      #address {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: calc(100% - 10px);
+        margin-bottom: 10px;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      input[type="submit"],
+      button {
+        width: 100%;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        
+      }
+
+      input[type="submit"]:hover,
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p#carinfo,
+      p#roomNumber {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #roomNumber {
+        display: none;
+      }
+      
+
+      a#dashboardLink {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a#dashboardLink:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+  </head>
+  <body>
+    <header><h4 class="text-primary"><a href="{{ url_for('rider_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      
+    <h2 class="text-primary">Book a Ride</h2>
+    </header>
+    <div id="map"></div>
+    <div id="address"></div>
+    <form id="rideForm" action="{{ url_for('book_ride') }}" method="post">
+      <input type="hidden" name="action" value="bookRide" />
+      <label for="origin" >Origin:</label>
+      <input
+        type="text"
+        id="origin"
+        name="origin"
+        list="savedAddresses"
+        required
+      />
+      <datalist id="savedAddresses">
+        <option value="" >Select or enter address</option>
+        {% for address in user.addresses %}
+        <option value="{{ address.address }}">{{ address.name }}</option>
+        {% endfor %}
+      </datalist>
+
+      <label for="seats_available" >Number of Passengers:</label>
+      <input
+        type="number"
+        id="seats_available"
+        name="seats_available"
+        min="1"
+        required
+      />
+
+      <label for="gender" >Gender Preference:</label>
+      <select id="gender" name="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+
+      <button type="button" id="submitLocation">Book a Ride</button>
+    </form>
+    <p id="carinfo"></p>
+    <p id="roomNumber">Room Number: <span id="room"></span></p>
+    <form id="messageForm" action="{{ url_for('book_ride') }}" method="post">
+      <input type="hidden" name="action" value="privateMessage" />
+      <input
+        type="submit"
+        id="privatemessage"
+        value="Private Message"
+        style="display: none; width: 150px"
+        
+      />
+    </form>
+    <p class="justify-content-center text-center">
+    <button id="cancelRideButton" style="display: none ; margin-top: 10px; width: 150px; margin-left: auto; margin-right: auto; justify-content: center" class="btn btn-danger">Cancel Ride</button>
+    </p>
+    <input type="hidden" id="ride_id" value="{{ ride_id }}" />
+<p class="text-center mt-3">
+        <a
+          href="{{ url_for('sos', username=username) }}"
+          class="btn btn-warning"
+          >SOS</a
+        >
+  </p>
+    
+    <script>
+      var map,
+        geocoder,
+        userLocation,
+        socket,
+        marker,
+        destMarker = null,
+        username = "{{ username }}",
+        originMarker,
+        accepted = false,
+        drivername,
+        ride_id;
+      console.log("The current username is:", username);
+      socket = io();
+      var driverAddress;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 18,
+          center: { lat: 1.3521, lng: 103.8198 }, // Default center (e.g., Singapore)
+        });
+        geocoder = new google.maps.Geocoder();
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true // Suppress default markers
+            })
+        directionsRenderer.setMap(map);
+
+        // Get user's geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
+              map.setCenter(userLocation); // Set the center of the map to the user's location
+              marker = new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "You are here",
+                icon: {
+                            url: '/static/img/location.png', // Change this to the path of your custom icon
+                            scaledSize: new google.maps.Size(30, 30) // Adjust the size as needed
+                        }
+              });
+
+              // Reverse geocoding to get user's address
+              geocoder.geocode(
+                { location: userLocation },
+                function (results, status) {
+                  if (status === "OK") {
+                    if (results[0]) {
+                      var address = results[0].formatted_address;
+                      document.getElementById("origin").value = address;
+                      document.getElementById("address").innerHTML =
+                        "Your address: " + address;
+                    } else {
+                      console.log("No results found");
+                    }
+                  } else {
+                    console.log("Geocoder failed due to: " + status);
+                  }
+                }
+              );
+            },
+            function () {
+              // Handle geolocation errors
+              console.log("Error: The Geolocation service failed.");
+            }
+          );
+        } else {
+          // Browser doesn't support geolocation
+          console.log("Error: Your browser doesn't support geolocation.");
+        }
+      }
+
+      document.getElementById("origin").addEventListener(
+        "input",
+        debounce(function () {
+          origin = this.value;
+          if (!origin) return; // Do nothing if the input is empty
+
+          geocoder.geocode({ address: origin }, function (results, status) {
+            if (status === "OK") {
+              var location = results[0].geometry.location;
+              document.getElementById("address").innerHTML =
+                "Your address: " + origin;
+              map.setCenter(location);
+              if (marker) {
+                marker.setMap(null); // Remove the marker from the map
+              }
+              // Place a new marker at the geocoded location
+              marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "Ride origin",
+                icon: {
+                            url: '/static/img/location.png', // Change this to the path of your custom icon
+                            scaledSize: new google.maps.Size(30, 30) // Adjust the size as needed
+                        }
+              });
+            } else {
+              console.error(
+                "Geocode was not successful for the following reason:",
+                status
+              );
+            }
+          });
+        }, 500)
+      ); // Debounce 500 milliseconds
+
+      // Debounce function to limit how often a function can run
+      function debounce(func, wait, immediate) {
+        var timeout;
+        return function () {
+          var context = this,
+            args = arguments;
+          var later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+          };
+          var callNow = immediate && !timeout;
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+          if (callNow) func.apply(context, args);
+        };
+      }
+
+      document
+        .getElementById("submitLocation")
+        .addEventListener("click", function () {
+          document.getElementById("rideForm").style.display = "none";
+          username = "{{ username }}";
+          var origin = document.getElementById("origin").value;
+          var seat = document.getElementById("seats_available").value;
+          var gender = document.getElementById("gender").value;
+
+          console.log("Username:", username);
+
+          // Submit the form data using AJAX
+          fetch("{{ url_for('book_ride') }}", {
+            method: "POST",
+            body: new FormData(document.getElementById("rideForm")),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              const ride_id = data.ride_id; // Retrieve the ride_id from the response
+              console.log("Emitting offer_ride event", {
+                ride_id: ride_id,
+                origin: origin,
+                username: username,
+                seat: seat,
+                gender: gender,
+              });
+              socket.emit("offer_ride", {
+                ride_id: ride_id,
+                origin: origin,
+                username: username,
+                seat: seat,
+                gender: gender,
+              });
+            })
+            .catch((error) => console.error("Error:", error));
+          console.log("Username:", username);
+        });
+
+      socket.on("trip_end", function (data) {
+        if (data.ride_ended == true) {
+          window.location.reload();
+          window.location.href =
+            "/driver_rate_review?drivername=" + encodeURIComponent(drivername);
+        }
+      });
+
+      socket.on("location_of_driver", function (data) {
+        if (accepted == true) {
+          console.log("Updated driver location:", data);
+          driverAddress = data.location;
+          var originAddress = document.getElementById("origin").value;
+          calculateAndDisplayRoute(driverAddress, originAddress);
+        }
+      });
+
+      socket.on("ride_accepted", function (data) {
+        if (username == data.rightname) {
+          accepted = true;
+          var origin = document.getElementById("origin").value;
+          document.getElementById("privatemessage").style.display = "inline";
+          document.getElementById("cancelRideButton").style.display = "inline";
+          console.log("Full data received:", data);
+          document.getElementById("carinfo").innerHTML = data.rating_star + "<br>" +
+            data.drivername +
+            "<br>" +
+            data.make +
+            " " +
+            data.model +
+            ", " +
+            data.year +
+            "<br>" +
+            data.license_plate;
+          drivername = data.drivername;
+          if (marker) {
+            marker.setMap(null); // Remove the marker from the map
+          }
+          /*if(data.driverAddress) {
+                    driverAddress = data.driverAddress;
+                    console.log("Driver Address:", driverAddress);
+                    var originAddress = document.getElementById('origin').value;
+                    calculateAndDisplayRoute(driverAddress, originAddress);
+                } else {
+                    console.error("Driver address is undefined in received data:", data);
+                }*/
+
+          document.getElementById("cancelRideButton").addEventListener("click", function () {
+              directionsRenderer.setDirections({ routes: [] });
+              document.getElementById("privatemessage").style.display = "none";
+              document.getElementById("cancelRideButton").style.display ="none";
+              document.getElementById("rideForm").style.display = "block";
+              document.getElementById("room").value = "";
+              document.getElementById("carinfo").innerHTML = "";
+              console.log(destMarker);
+              socket.emit("cancel_ride", {
+                riderlocation: origin,
+                ridername: username,
+              });
+
+              window.location.reload();
+            });
+        }
+      });
+
+      socket.on("ride_cancel", function (data) {
+        var rightname = data.rightname;
+        console.log("rightname: ", rightname);
+        console.log("username", username);
+        if (username == rightname) {
+          directionsRenderer.setDirections({ routes: [] });
+          document.getElementById("privatemessage").style.display = "none";
+          document.getElementById("cancelRideButton").style.display = "none";
+          document.getElementById("rideForm").style.display = "block";
+          document.getElementById("room").value = "";
+          window.location.reload();
+        }
+      });
+
+      function calculateAndDisplayRoute(destination, origin) {
+        if (destMarker) {
+            destMarker.setMap(null); // Remove the existing marker
+        }
+        if (destination == origin) {
+          origin = driverAddress;
+          destination = "461 Clementi Rd, Singapore 599491";
+        }
+        directionsService.route(
+          {
+            origin: origin,
+            destination: destination,
+            travelMode: "DRIVING",
+          },
+          function (response, status) {
+            if (status === "OK") {
+              directionsRenderer.setDirections(response);
+              destMarker = new google.maps.Marker({
+                position: response.routes[0].legs[0].end_location,
+                map: map,
+                icon: {
+                            url: '/static/img/car-icon.png', // Change this to the path of your custom icon
+                            scaledSize: new google.maps.Size(50, 50) // Adjust the size as needed
+                        }
+              });
+              originMarker = new google.maps.Marker({
+                position: response.routes[0].legs[0].start_location,
+                map: map,
+                icon: {
+                            url: '/static/img/location.png', // Change this to the path of your custom icon
+                            scaledSize: new google.maps.Size(30, 30) // Adjust the size as needed
+                        }
+              });
+            } else {
+              window.alert("Directions request failed due to " + status);
+            }
+          }
+        );
+      }
+
+      document
+        .getElementById("originSelect")
+        .addEventListener("change", function () {
+          var selectedAddress = this.value;
+          if (selectedAddress) {
+            document.getElementById("origin").value = selectedAddress;
+          }
+        });
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWGspYJlGaBszG-0PYcN41cCCGPpEnZ5s&callback=initMap"
+      async
+      defer
+    ></script>
+    <a href="{{ url_for('rider_dashboard') }}" id="dashboardLink"
+      >Go to dashboard</a
+    >
+        <script src="../static/js/translation.js"></script>
+
+  </body>
+</html>

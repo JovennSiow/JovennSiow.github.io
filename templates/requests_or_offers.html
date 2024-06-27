@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Requests or Offers</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body, html {
+        padding: 60px 20px 45px 20px;
+        margin: auto;
+        height: 100%;
+      }
+      *{
+        box-sizing: border-box;
+      }
+      .text-center {
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        border-radius: 50px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 50%;
+        padding: 20px;
+        text-align: center;
+        justify-content: center
+      }
+
+      .btn {
+        border-radius: 50px;
+        width: 180px;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="text-center">
+        <h2 class="text-primary">Choose the Category</h2>
+        <p>
+          <a
+            href="{{ url_for('scheduledRidesByDriver') }}"
+            class="btn btn-success btn-lg mt-5 mb-4 mr-2"
+            >Scheduled Ride Offers</a
+          >
+        </p>
+        <p>
+          <a
+            href="{{ url_for('scheduledRidesByRider') }}"
+            class="btn btn-warning btn-lg mb-4 mr-2"
+            >Scheduled Ride Requests</a
+          >
+        </p>
+        <p>
+          {% if session['role'] == 'Rider' %}
+
+          <a
+            href="{{ url_for('rider_dashboard') }}"
+            class="btn btn-danger btn-lg mr-2"
+            >Go Back to Dashboard</a
+          >
+          {%elif session['role'] == 'Driver'%}
+          <a
+            href="{{ url_for('driver_dashboard') }}"
+            class="btn btn-danger btn-lg mr-2"
+            >Go Back to Dashboard</a
+          >
+          {%endif%}
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

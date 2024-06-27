@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Settings</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+      <!-- Bootstrap Icons CSS -->
+      <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar {
+        background-color: #6495ed;
+        color: white;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        heigth: 50px;
+      }
+
+      .navbar-title {
+      
+        font-weight: bold;
+        margin: 0;
+        text-align: left;
+        
+      }
+      .form-label:hover {
+        cursor: pointer;
+      }
+      .container {
+        max-width: 700px;
+        margin-top: 70px ;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30px;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        align-items: center;
+        align-text: center;
+        justify-content: center;
+        
+      }
+      
+      a:hover {
+        text-decoration: none;
+      }
+      h1 {
+        color: #007bff;
+        
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        width: 70%;
+        margin-bottom: 10px;
+        padding: auto
+      }
+      .avatar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .avatar-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 10px;
+      }
+      .file-input {
+        margin-bottom: 10px;
+      }
+      .dashboard-link {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .border-bottom {
+        border-bottom: 1px solid #dee2e6; /* Bootstrap default border color */
+        padding: 5px;  /*Add some padding for spacing*/
+        margin-bottom: 10px; 
+        margin-left: 0px;
+        margin-right: 0px;
+        text-align: center;
+        justify-content: center;
+        width: 100%; /* Stretch the border across the entire width */
+        box-sizing: border-box; /* Include padding and border in the width calculation */
+      }
+      
+      
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      
+       
+      <h4 class="navbar-title" >
+         {% if session['role'] == 'Driver' %}
+        <a href="{{ url_for('driver_dashboard') }}" style="
+        color: white;
+        text-decoration: none;
+        
+      ">          <i class="bi bi-chevron-left"></i></a>
+        {% elif session['role'] == 'Rider' %}
+        <a href="{{ url_for('rider_dashboard') }}" style="
+        color: white;
+        text-decoration: none;
+        
+
+      ">      <i class="bi bi-chevron-left"></i></a>      
+        {% endif %} 
+        <span id="settings">
+        Settings </span>
+      </h4>
+      
+      <li class="nav-item"  style="list-style-type:none">
+          <label for="language" id="language_label" style="padding-top: 9px">Change Language: </label>
+          <select id="language" class="form-select form-select-sm" >
+            <option value="en">English</option>
+            <option value="ms">Malay</option>
+            <option value="zh">Chinese</option>
+            <option value="fr">French</option>
+          </select>
+      </li>
+      
+    </nav>
+   
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+      <div class="avatar-container container mb-0 text-center">
+       <h4>  {{ username }} </h4>
+      </br>
+
+
+        <form id="imageUploadForm" enctype="multipart/form-data">
+          {% if avatar_path %}
+          <img
+            id="selectedAvatar"
+            src="{{ avatar_path }} "
+            class="rounded-circle avatar-image"
+            alt="Profile Picture"
+          />
+          {%else%}
+          <img
+            id="selectedAvatar"
+            src="{{ 'https://mdbootstrap.com/img/Photos/Others/placeholder-avatar.jpg' }} "
+            class="rounded-circle avatar-image"
+            alt="Profile Picture"
+          />
+          {%endif%}
+
+          <div class="file-input">
+            <label class="form-labl text-center" for="customFile2" id="choose_file" style="cursor: pointer; color: darkblue">
+              Choose File
+            </label>
+            <input
+              type="file"
+              class="form-control d-none"
+              id="customFile2"
+              onchange="displaySelectedImage(event, 'selectedAvatar')"
+            />
+          </div>
+          <button type="button" class="btn btn-info text-center" onclick="uploadImage()" id="upload">Upload</button>
+        </form>
+      </div>
+  
+    <div class="settings_content container mt-3 p-0">
+      
+        <div class="border-bottom">
+          <a href="{{ url_for('profile', username=username) }}" id="view_profile">View Profile</a>
+        </div>
+        {% if session['role'] == 'Driver' %} {% if car %}
+        <div class="border-bottom">
+          <a href="{{ url_for('view_car', car_id=car.id) }}"
+           id="view_car_details" >View Car Details</a
+          >
+        </div>
+        {% else %}
+        <div class="border-bottom  text-danger" id="no_car_details_available" >No car details available.</div>
+        {% endif %}
+
+        <div class="border-bottom" >
+          <a href="{{ url_for('car_detail') }}" id="add_car_details">Add Car Details</a>
+        </div>
+        {% endif %}
+        <div class="border-bottom">
+          <a href="{{ url_for('trip_history', username=username)}}" id="trip_history"
+            >Trip History</a
+          >
+        </div>
+        <div class="border-bottom">
+          <a href="{{ url_for('saved_address', username=username)}}" id="saved_address"
+            >Saved Address</a
+          >
+        </div>
+        <div class="border-bottom">
+          <a href="{{ url_for('emergency_contact', username=username)}}" id="emergency_contact"
+            >Emergency Contact</a
+          >
+        </div>
+        <div class="border-bottom">
+          <a href="{{ url_for('change_password', username=username)}}" id="change_password">Change Password</a>
+        </div>
+        <div class="border-bottom">
+          <a
+            href="{{ url_for('delete_account') }}"
+            onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')"
+            id="delete_account">Delete Account</a
+          >
+        </div>
+        <div class="border-bottom text-danger">
+          <a href="{{ url_for('logout') }}" id="logout">Logout</a>
+        </div>
+      </div>
+
+        <p style="text-align: center">
+          {% if session['role'] == 'Driver' %}
+          <a href="{{ url_for('driver_dashboard') }}" id="dashboardLink">Go Back to Dashboard</a>
+          {% elif session['role'] == 'Rider' %}
+          <a href="{{ url_for('rider_dashboard') }}" id="dashboardLink">Go Back to Dashboard</a>
+          {% endif %}
+        </p>
+    
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ 
+    <script>
+      function displaySelectedImage(event, elementId) {
+        const selectedImage = document.getElementById(elementId);
+        const fileInput = event.target;
+
+        if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            selectedImage.src = e.target.result;
+          };
+
+          reader.readAsDataURL(fileInput.files[0]);
+        }
+      }
+
+      function uploadImage() {
+        const fileInput = document.getElementById("customFile2");
+        const file = fileInput.files[0];
+
+        // Retrieve username from session
+        const username = "{{ session['username'] }}";
+
+        if (!file) {
+          console.error("No file selected");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("username", username);
+
+        fetch("/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((data) => console.log(data))
+          .catch((error) => console.error("Error:", error));
+      }
+      // JavaScript code to display the selected image when the page loads
+      /* window.onload = function () {
+        const avatarPath = "{{ avatar_path }}";
+        if (avatarPath) {
+          const selectedAvatar = document.getElementById("selectedAvatar");
+          selectedAvatar.src = avatarPath;
+        }
+      }; */
+    </script>
+        <script src="../static/js/translation.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQs</title><!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa; /* Light gray background */
+        color: #343a40; /* Dark gray text color */
+        padding-top: 20px;
+      }
+
+       .container {
+        max-width: 800px;
+        margin-top: 40px ;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30px;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        align-items: center;
+        align-text: center;
+        justify-content: center;
+        
+      }
+
+      h1 {
+        color: #007bff; /* Primary blue heading color */
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      ul {
+        list-style-type: none; /* Remove bullets */
+        padding: 0;
+      }
+
+      li {
+        background-color: #ffffff; /* White background for each FAQ item */
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+      }
+
+      li strong {
+        color: #007bff; /* Primary blue color for FAQ questions */
+      }
+
+      a {
+        color: #007bff; /* Primary blue link color */
+        text-decoration: none;
+        margin-top: 10px;
+        display: inline-block;
+        transition: color 0.3s;
+      }
+
+      a:hover {
+        color: #0056b3; /* Darker blue on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"> <h4>
+      {%if session['role'] == "Driver" %}
+      <a href="{{ url_for('driver_dashboard') }}" style=" text-decoration: none; margin-right: 10px; float: left" >  <i class="bi bi-chevron-left"></i> </a>
+      {%elif session['role'] == "Rider" %}
+      <a href="{{ url_for('rider_dashboard') }}" style=" text-decoration: none; margin-right: 10px; float: left" >  <i class="bi bi-chevron-left"></i> </a>
+      
+    {%endif%}
+    </h4>
+      <h1>FAQs</h1>
+      <ul>
+        {% for faq in faqs %}
+        <li>
+          <strong>{{ faq.question }}</strong><br />
+          {{ faq.answer }}
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if session['role'] == 'Driver' %}
+      <a href="{{ url_for('driver_dashboard') }}" class="btn btn-primary"
+        >Go Back to Dashboard</a
+      >
+      {% elif session['role'] == 'Rider' %}
+      <a href="{{ url_for('rider_dashboard') }}" class="btn btn-primary"
+        >Go Back to Dashboard</a
+      >
+      {% endif %}
+    </div>
+  </body>
+</html>

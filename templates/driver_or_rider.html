@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Driver or Rider</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+  
+      * {
+        box-sizing: border-box;
+      }
+      .navbar{
+        /* background: #6A5ACD; slate blue*/
+        /* background: #6495ED; cornflowerblue */
+        background: #4682B4; /* steel blue */
+        z-index: 100;
+      }
+      .navbar-brand {
+        font-weight: bold;
+      }
+    
+      body, html {
+        padding: 60px 20px 45px 20px;
+        margin: auto;
+        height: 100%;
+      }
+    .bg-image {
+    background-image: url('../static/img/CarpoolLane.jpg');
+    background-position: center;
+
+  /* Add the blur effect */
+  filter: blur(3px);
+  -webkit-filter: blur(3px);
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-repeat: no-repeat;
+  background-size: 800px;
+}
+
+/* Position text in the middle of the page/image */
+.bg-text {
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0, 0.2); /* Black w/opacity/see-through */
+  color: white;
+  font-weight: bold;
+  border: 3px solid #f1f1f1;
+  border-radius: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -47%); 
+  z-index: 2;
+  width: 40%;
+  padding: 20px;
+  text-align: center;
+}
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark text-white fixed-top self-align-center">
+      <a class="navbar-brand text-white" href="#" >SIM Ride</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+     
+      
+      <div class="collapse navbar-collapse float-right" id="navbarNav" >
+        <ul class="navbar-nav ml-auto">
+          <!-- Align menu to the right -->
+          <li class="nav-item">
+          <label for="language" id="language_label" style="padding-top: 9px">Change Language: </label>
+          <select id="language" class="form-select form-select-sm" >
+            <option value="en">English</option>
+            <option value="ms">Malay</option>
+            <option value="zh">Chinese</option>
+            <option value="fr">French</option>
+          </select>
+        </li>
+      </nav>
+    <div class="bg-image mb-5"> </div>
+    <div class="bg-text">
+      <h3>Welcome, {{ username }}</h3>
+    </br> </br>
+      <form method="POST" action="{{ url_for('driver_or_rider') }}" >
+        <input type="hidden" name="role" value="Driver" />
+        <button type="submit" class="btn btn-lg btn-success rounded-pill" id="to_be_a_driver">
+          To be a Driver!
+        </button>
+      </form>
+      <br /> </br> 
+      <form method="POST" action="{{ url_for('driver_or_rider') }}">
+        <input type="hidden" name="role" value="Rider" />
+        <button type="submit" class="btn btn-lg btn-warning rounded-pill" id="to_be_a_rider">
+          To be a Rider!
+        </button>
+      </form>
+    </br> </br> 
+    <button type="button" class="btn btn-lg btn-danger rounded-pill" onclick= "window.location.href = '/logout'" id="logout">   Log out    </button>
+  </br></br>
+</div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="../static/js/translation.js"></script>
+  </body>
+</html>

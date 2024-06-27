@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQs</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      li {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      li strong {
+        color: #007bff;
+      }
+
+      form {
+        display: inline;
+        margin-right: 10px;
+      }
+
+      form input[type="submit"] {
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      form input[type="submit"]:hover {
+        background-color: #c82333;
+      }
+
+      a {
+        text-decoration: none;
+        color: #007bff;
+        margin-left: 10px;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      a.add-faq {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a.add-faq:hover {
+        text-decoration: underline;
+      }
+
+      a.back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a.back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h4 class="text-primary"><a href="{{ url_for('admin_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      
+    <h1>FAQs</h1>
+    <ul>
+      {% for faq in faqs %}
+      <li>
+        <strong>{{ faq.question }}</strong><br />
+        {{ faq.answer }}
+        <form method="post" action="{{ url_for('delete_faq', faq_id=faq.id) }}">
+          <input type="submit" value="Delete" />
+        </form>
+        <a href="{{ url_for('update_faq', faq_id=faq.id) }}">Update</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <a href="{{ url_for('add_faq') }}" class="add-faq">Add a new FAQ</a>
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link"
+      >Back to Home</a
+    >
+  </body>
+</html>

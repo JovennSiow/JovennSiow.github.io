@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trip History</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa; /* Light gray background */
+        color: #343a40; /* Dark gray text color */
+        padding-top: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: #007bff; /* Primary blue heading color */
+        margin-bottom: 10px;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .trip-card {
+        background-color: #ffffff; /* White card background */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .trip-info {
+        margin-bottom: 10px;
+      }
+
+      hr {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border: 0;
+        border-top: 1px solid #dee2e6; /* Gray border color */
+      }
+
+      .btn-back {
+        background-color: #6c757d; /* Steel blue button color */
+        color: #ffffff; /* White text color */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .btn-back:hover {
+        background-color: #5a6268; /* Darker steel blue on hover */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h4 class="text-primary"><a href="{{ url_for('settings') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+      
+      <h1>Trip History</h1>
+      <div>
+        <!-- Display past rides -->
+        {% for ride in past_rides %} {% if ride.driver_response == 'accepted'
+        and ride.rider_response == 'accepted' %}
+        <div class="trip-card">
+          <div class="trip-info">
+            <p><strong>Driver:</strong> {{ ride.driver }}</p>
+            <p><strong>Rider:</strong> {{ ride.rider }}</p>
+            <p><strong>Origin:</strong> {{ ride.origin }}</p>
+            <p><strong>Destination:</strong> {{ ride.destination }}</p>
+            <p><strong>Date:</strong> {{ ride.date }}</p>
+            <p><strong>Time:</strong> {{ ride.time }}</p>
+            <p><strong>Driver Response:</strong> {{ ride.driver_response }}</p>
+            <p><strong>Rider Response:</strong> {{ ride.rider_response }}</p>
+          </div>
+          <hr />
+        </div>
+        {% endif %} {% endfor %}
+      </div>
+
+      <p>
+        <a href="{{ url_for('settings') }}" class="btn btn-back">Go Back</a>
+      </p>
+    </div>
+  </body>
+</html>

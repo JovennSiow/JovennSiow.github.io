@@ -1,0 +1,39 @@
+{% for ride in scheduled_rides %}
+        <div class="justify-content-center">
+          <div class="card ride-card ml-3 mr-3">
+            <div class="card-body">
+              <h5 class="card-title">Rider: {{ ride.rider }}</h5>
+              <p class="card-text">
+                <strong>Origin:</strong> {{ ride.origin }}
+              </p>
+              <p class="card-text">
+                <strong>Destination:</strong> {{ ride.destination }}
+              </p>
+              <p class="card-text"><strong>Date:</strong> {{ ride.date }}</p>
+              <p class="card-text"><strong>Time:</strong> {{ ride.time }}</p>
+              <p class="card-text">
+                <strong>Number of Passengers:</strong> {{ ride.number_of_passengers }}</p>
+              </p>
+              <form
+                action="{{ url_for('accept_scheduled_rides', ride_id=ride.id) }}"
+                method="POST"
+              >
+                <div class="form-group">
+                  <label for="driver_origin">Your Origin:</label>
+                  <input
+                    type="text"
+                    id="driver_orign"
+                    name="driver_origin"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary btn-book">
+                  Accept Ride
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+   

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rider Scheduled Ride</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    /><style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 6px;
+        }
+        
+        #map {
+            height: 400px;
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        #address {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+      .container {
+        background-color: #fff; /* White container background */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        padding: 30px;
+        margin-bottom: 15px;
+      }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: calc(100% - 10px);
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"],
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p#carinfo,
+        p#roomNumber {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #roomNumber {
+            display: none;
+        }
+
+        a#dashboardLink {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a#dashboardLink:hover {
+            text-decoration: underline;
+        }
+        #rideInfo {
+                background-color: #f9f9f9;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+      <h4 class="text-primary"><a href="{{ url_for('rider_dashboard') }}" style="text-decoration: none; margin-left:10px; margin-top: 10px; margin-bottom:10px; margin-right:0px; float: left; font-weight: bold" >  <i class="bi bi-chevron-left"></i> </a> </h4>  
+ 
+        <h2 class="text-center text-primary "> Rider Scheduled Ride Interface </h2>
+        <div id="map"></div>
+        <div id="address"></div>
+      
+        
+        <div id="rideInfo">
+            <h4 class="mb-3">Scheduled Ride Information:</h4>
+            
+                <p><strong>Driver:</strong> {{ driver }}</p>
+                <p><strong>Driver's Origin:</strong> {{ origin }}</p>
+                <p><strong>Your Origin (Pick-up Point):</strong> {{ pickup_point }}</p>
+                <p><strong>Destination:</strong> {{ destination }}</p>
+                <p><strong>Scheduled Time:</strong> {{ time }}</p>
+                <p><strong>Car:</strong> {{ make }} {{ model }} {{ year }}</p>
+                <p><strong>License Plate:</strong> {{ license_plate }}</p>
+            
+        </div>
+        
+        <p id="roomNumber">Room Number: <span id="room"></span></p>
+        <form id="messageForm" action="{{ url_for('book_ride') }}" method="post" class="mb-3 form-container">
+            <input type="hidden" name="action" value="privateMessage" />
+            <input type="submit" id="privatemessage" class="btn btn-primary" style="width: 150px" value="Private Message" />
+        </form>
+        </div>
+        <input type="hidden" id="ride_id" value="{{ ride_id }}" />
+        <!-- SOS -->
+        <p class="text-center mt-3">
+            <a href="{{ url_for('sos', username=username) }}" class="btn btn-warning">SOS</a>
+        </p>
+    
+  
+    <script>
+      var map,
+        geocoder,
+        userLocation,
+        socket,
+        marker,
+        destMarker,
+        username = "{{ username }}",
+        originMarker,
+        accepted = false,
+        drivername,
+        ride_id;
+      var origin = "{{ origin }}"; // Driver's origin
+      var destination = "{{ destination }}"; // Final destination
+      var pickupPoint = "{{ pickup_point }}"; // Rider's pickup location (same as driver's origin in this context)
+      var waypointMarkers = [];
+
+      console.log("The current username is:", username);
+      socket = io();
+      var driverAddress;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
+          center: { lat: 1.3521, lng: 103.8198 }, // Default center (e.g., Singapore)
+        });
+
+        geocoder = new google.maps.Geocoder();
+        directionsService = new google.maps.DirectionsService();
+        //directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true // Suppress default markers
+            })
+        directionsRenderer.setMap(map);
+
+        calculateAndDisplayRoute();
+      }
+
+      socket.on("trip_end", function (data) {
+        if (data.ride_ended == true) {
+          window.location.reload();
+          window.location.href =
+            "/driver_rate_review?drivername=" + encodeURIComponent(drivername);
+        }
+      });
+
+      document
+        .getElementById("cancelRideButton")
+        .addEventListener("click", function () {
+          directionsRenderer.setDirections({ routes: [] });
+          document.getElementById("privatemessage").style.display = "none";
+          document.getElementById("cancelRideButton").style.display = "none";
+          document.getElementById("room").value = "";
+          console.log(destMarker);
+          socket.emit("cancel_ride", {
+            riderlocation: origin,
+            ridername: username,
+          });
+          clearAllMarkers();
+          //window.location.reload();
+        });
+
+      socket.on("ride_cancel", function (data) {
+        var rightname = data.rightname;
+        console.log("rightname: ", rightname);
+        console.log("username", username);
+        if (username == rightname) {
+          directionsRenderer.setDirections({ routes: [] });
+          document.getElementById("privatemessage").style.display = "none";
+          document.getElementById("cancelRideButton").style.display = "none";
+          document.getElementById("room").value = "";
+          clearAllMarkers();
+          //window.location.reload();
+        }
+      });
+
+      function calculateAndDisplayRoute() {
+        geocoder.geocode({ address: origin }, function (results, status) {
+          if (status === "OK") {
+            var driverOrigin = results[0].geometry.location;
+            originMarker = new google.maps.Marker({
+            position: driverOrigin,
+            map: map,
+            icon: {
+                url: 'static/img/car-icon.png',  // Path to the image you want to use as a marker
+                scaledSize: new google.maps.Size(40, 40)  // Sets the icon size
+            }
+            });
+            geocoder.geocode({ 'address': destination }, function(results, status) {
+            if (status === 'OK') {
+              destMarker = new google.maps.Marker({
+                    position: results[0].geometry.location,
+                    map: map,
+                    icon: {
+                        url: 'static/img/location.png',
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+            } else {
+                console.error('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+
+
+            geocoder.geocode(
+              { address: pickupPoint },
+              function (results, status) {
+                if (status === "OK") {
+                  var riderPickup = results[0].geometry.location;
+
+                  var request = {
+                    origin: driverOrigin,
+                    destination: destination,
+                    waypoints: [{ location: riderPickup, stopover: true }],
+                    travelMode: "DRIVING",
+
+                  };
+
+                  directionsService.route(request, function (response, status) {
+                    if (status === "OK") {
+                      directionsRenderer.setDirections(response);
+
+                      response.routes[0].legs.forEach((leg, index) => {
+                      if (index > 0) {  // Skip the origin
+                        let marker = new google.maps.Marker({
+                          position: leg.start_location,
+                          map: map,
+                          icon: {
+                            url: 'static/img/pick-up.png',  // Path to your custom image
+                            scaledSize: new google.maps.Size(25, 25)  // Size of the image
+                          }
+                        });
+                        waypointMarkers.push(marker);
+                      }
+                    });
+                    } else {
+                      console.error(
+                        "Directions request failed due to " + status
+                      );
+                    }
+                  });
+                } else {
+                  console.error(
+                    "Geocode failed for pickup point due to: " + status
+                  );
+                }
+              }
+            );
+          } else {
+            console.error("Geocode failed for origin due to: " + status);
+          }
+        });
+      }
+      function clearAllMarkers() {
+            for (var i = 0; i < waypointMarkers.length; i++) {
+                waypointMarkers[i].setMap(null);
+            }
+            waypointMarkers = [];
+            if (originMarker) 
+            {
+              originMarker.setMap(null);
+              console.log("Hi");
+            }
+            if (destMarker) destMarker.setMap(null);
+      }
+    </script>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWGspYJlGaBszG-0PYcN41cCCGPpEnZ5s&callback=initMap"
+      async
+      defer
+    ></script>
+    <a href="{{ url_for('rider_dashboard') }}" id="dashboardLink"
+      >Go to dashboard</a
+    >
+  </body>
+</html>

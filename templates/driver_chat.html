@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Driver Chat</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      .navbar {
+        background-color: #6495ed;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        text-align: center;
+      }
+
+      .navbar-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+        text-align: center;
+      }
+      #message-container {
+        margin-top: 60px; /* Adjust margin to accommodate navbar */
+        height: calc(100vh - 60px); /* Adjust height to accommodate navbar */
+        overflow-y: auto;
+      }
+      #messages {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        height: 450px;
+        width: 70%;
+        overflow-y: auto;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+      }
+
+      #message-input {
+        padding: 10px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        width: 62%;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: auto;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p {
+        margin: 5px 0;
+      }
+
+      strong {
+        color: #007bff;
+      }
+
+      em {
+        color: #28a745;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar text-center">
+      
+      <h3 class="navbar-title text-center" style="text-align: center">
+        <a href="{{ url_for('driver_dashboard') }}" style="color: white; text-decoration: none; margin-right: 10px" >  <i class="bi bi-chevron-left"></i> </a>
+
+        Drivers' Chat Room
+      </h3>
+    </div>
+
+    <div id="message-container">
+      <div id="messages"></div>
+      <div style="text-align: center; margin-left: auto; margin-right: auto">
+        <input type="text" id="message-input" placeholder="Type your message" />
+
+        <button onclick="sendMessage()">
+          <i class="bi bi-send"> Send </i>
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+
+    <script>
+      // Initialize SocketIO
+      const socket = io();
+
+      // Function to send a message
+      function sendMessage() {
+        const messageInput = document.getElementById("message-input");
+        const message = messageInput.value.trim();
+
+        if (!message) {
+          alert("Please enter a message.");
+          return;
+        }
+
+        socket.emit("driver_message", {
+          username: "{{ username }}",
+          message: message,
+        });
+        messageInput.value = ""; // Clear the input field
+      }
+
+      // Join the common room when the page loads
+      socket.emit("join_common_room");
+
+      // Handle incoming messages
+      socket.on("message", function (data) {
+        const messages = document.getElementById("messages");
+        messages.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`;
+        scrollToBottom();
+      });
+
+      // Handle user joined event
+      socket.on("user_joined", function (username) {
+        const messages = document.getElementById("messages");
+        messages.innerHTML += `<p><em>${username} joined the room.</em></p>`;
+        scrollToBottom();
+      });
+
+      // Join the common room
+      socket.on("join_common_room", function () {
+        socket.emit("join_common_room");
+      });
+
+      // Leave the common room
+      socket.on("leave_common_room", function () {
+        socket.emit("leave_common_room");
+      });
+
+      // Scroll to bottom function
+      function scrollToBottom() {
+        const messages = document.getElementById("messages");
+        messages.scrollTop = messages.scrollHeight;
+      }
+    </script>
+  </body>
+</html>

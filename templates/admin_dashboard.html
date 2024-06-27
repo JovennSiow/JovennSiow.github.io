@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      h2 {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      li {
+        margin: 10px;
+        text-align: center;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.3s;
+        width: 250px;
+        text-align: center;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card a {
+        text-decoration: none;
+        color: #333;
+      }
+
+      .button {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Welcome, {{ username }}</h2>
+    <ul>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('profile') }}">Profile</a>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('user_management') }}">User Management</a>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('user_reports') }}">User Reports</a>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('faqs_page') }}">FAQs</a>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('admin_panel') }}">User Questions</a>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a
+            href="{{ url_for('delete_account') }}"
+            onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')"
+            >Delete Account</a
+          >
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </body>
+</html>

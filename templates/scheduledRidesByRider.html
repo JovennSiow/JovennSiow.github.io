@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Scheduled Rides</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <script src="static/js/filter.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .ride-card {
+        margin-bottom: 20px;
+      }
+
+      .btn-start {
+        margin-top: 10px;
+      }
+
+      label {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body id="my-rides-rider">
+    <div class="container">
+      <h4><a
+        href="{{ url_for('requests_or_offers') }}"
+        style="
+          text-decoration: none;
+          margin-top: 10px;
+          float: left;
+        "
+      >
+        <i class="bi bi-chevron-left"></i> 
+      </a></h4>
+      <h1 class="text-center text-primary ml-3 mr-3">My Scheduled Rides</h1>
+      <div class="text-center mb-4">
+        <label for="date-picker">Select a date:</label>
+        <input
+          type="date"
+          id="date-picker"
+          name="date-picker"
+          
+        />
+      </div>
+      <div id="my-rides-container-requests">
+        <!-- Initial rides list rendered by server-side -->
+        {% if session['role'] == 'Rider' %}
+        <strong>
+          <h4 class="mb-4 mt-5 ml-3 mr-3">Scheduled Rides Requested by Me</h4></strong
+        >
+
+        {% for ride in requested_rides %}
+        <div class="justify-content-center">
+          <div class="card ride-card ml-3 mr-3">
+            <div class="card-body">
+              <p class="card-text">
+                <strong>Origin:</strong> {{ ride.origin }}
+              </p>
+              <p class="card-text">
+                <strong>Destination:</strong> {{ ride.destination }}
+              </p>
+              <p class="card-text"><strong>Date:</strong> {{ ride.date }}</p>
+              <p class="card-text"><strong>Time:</strong> {{ ride.time }}</p>
+              <p class="card-text">
+                <strong>Seats Requested:</strong> {{ ride.number_of_passengers
+                }}
+              </p>
+              {% if ride.driver %}
+              <p class="card-text">
+                <strong>Driver:</strong> {{ ride.driver }}
+              </p>
+              <p class="card-text">
+                <strong>Driver's Origin:</strong> {{ ride.driver_origin }}
+              </p>
+              {% endif %} {% if ride.date == today and ride.driver %}
+              <a
+                href="{{ url_for('rider_scheduled_ride', username=username, gender=gender, driver=ride.driver, origin=ride.driver_origin, destination=ride.destination, date=ride.date, time=ride.time, seats_available=ride.number_of_passengers, pickup_point=ride.origin) }}"
+                class="btn btn-primary btn-start"
+                >Start Now</a
+              >
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %} {% endif %} {% if session['role'] == 'Driver' %}
+        <strong
+          ><h4 class="mb-4 mt-5 ml-3 mr-3">
+            Scheduled Ride Requests Accepted by Me
+          </h4></strong
+        >
+
+        {% for ride in accepted_rides %}
+        <div class="justify-content-center">
+          <div class="card ride-card ml-3 mr-3">
+            <div class="card-body">
+              <p class="card-text">
+                <strong>Origin:</strong> {{ ride.driver_origin }}
+              </p>
+              <p class="card-text">
+                <strong>Destination:</strong> {{ ride.destination }}
+              </p>
+              <p class="card-text"><strong>Date:</strong> {{ ride.date }}</p>
+              <p class="card-text"><strong>Time:</strong> {{ ride.time }}</p>
+              <p class="card-text">
+                <strong>Seats Requested:</strong> {{ ride.number_of_passengers
+                }}
+              </p>
+              <p class="card-text">
+                <strong>Requested By:</strong> {{ ride.rider }}
+              </p>
+              <p class="card-text">
+                <strong>Pick-up Point:</strong> {{ ride.origin }}
+              </p>
+              {% if ride.date == today %}
+              <a
+                href="{{ url_for('driver_scheduled_ride', username=username, gender=gender, origin=ride.driver_origin, destination=ride.destination, date=ride.date, time=ride.time, seats_available=ride.number_of_passengers, booked_by=ride.rider, pickup_point=ride.origin) }}"
+                class="btn btn-primary btn-start"
+                >Start Now</a
+              >
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %} {% endif %}
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
